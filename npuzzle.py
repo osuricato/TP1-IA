@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Código exemplo do problema do quebra cabeça de N peças usando o algoritmo A*
-# A Função heurística é a conhecida distância Manhattan entre a psição 
+# A Função heurística é a conhecida distância Manhattan entre a posição 
 #  atual e a posição desejada para cada peça.
 # Distância de Manhattan também conhecida como distância de quarteirão.
 
@@ -23,10 +23,12 @@
 import random
 import math
 
-_goal_state = [[01,02,03,04],
-               [05,06,07,8],
-               [9,10,11,12],
-               [13,14,15,00]]
+_goal_state = [[1,2,3,4,5,6],
+               [7,8,9,10,11,12],
+               [13,14,15,16,17,18],
+               [19,20,21,22,23,24],
+               [25,26,27,28,29,30],
+               [31,32,33,34,35,00]]
                
 
 # -------------------------------------------------
@@ -40,7 +42,6 @@ def index(item, seq):
         
 # ------------------------------- Class do Quebra Cabeça
 class NPuzzle:
-
     
     # -------------------------------------------------
     def __init__(self):
@@ -51,7 +52,7 @@ class NPuzzle:
         # nó pai no caminho da pesquisa
         self._parent = None
         self.adj_matrix = []
-        for i in range(4):
+        for i in range(6):
             self.adj_matrix.append(_goal_state[i][:])
 
     # -------------------------------------------------
@@ -64,7 +65,7 @@ class NPuzzle:
     # -------------------------------------------------
     def __str__(self):
         res = ''
-        for row in range(4):
+        for row in range(6):
             res += ' '.join(map(str, self.adj_matrix[row]))
             res += '\r\n'
         return res
@@ -72,7 +73,7 @@ class NPuzzle:
     # -------------------------------------------------
     def _clone(self):
         p = NPuzzle()
-        for i in range(4):
+        for i in range(6):
             p.adj_matrix[i] = self.adj_matrix[i][:]
         return p
 
@@ -88,9 +89,9 @@ class NPuzzle:
             free.append((row - 1, col))
         if col > 0:
             free.append((row, col - 1))
-        if row < 3:
+        if row < 5:
             free.append((row + 1, col))
-        if col < 3:
+        if col < 5:
             free.append((row, col + 1))
 
         return free
@@ -184,11 +185,11 @@ class NPuzzle:
     # -------------------------------------------------
     def find(self, value):
         #retorna a linha, coluna do valor especificado no gráfico
-        if value < 0 or value > 16:
+        if value < 0 or value > 36:
             raise Exception("valor fora da faixa")
 
-        for row in range(4):
-            for col in range(4):
+        for row in range(6):
+            for col in range(6):
                 if self.adj_matrix[row][col] == value:
                     return row, col
     
@@ -216,20 +217,20 @@ def heur(puzzle, item_total_calc, total_calc):
 
 #Parâmetros:
 # puzzle - o quebra-cabeça
-# item_total_calc - pega 4 parâmetros: linha e coluna atual, e linha e coluna alvo.
+# item_total_calc - pega 6 parâmetros: linha e coluna atual, e linha e coluna alvo.
 #
 # Retorna: inteiro. A soma de item_total_calc sobre todas entradas e retorna um inteiro.
 # Este ;e o valor de função heurística.
     t = 0
-    for row in range(4):
-        for col in range(4):
+    for row in range(6):
+        for col in range(6):
             val = puzzle.peek(row, col) - 1
-            target_col = val % 4
-            target_row = val / 4
+            target_col = val % 6
+            target_row = val / 6
 
             # account for 0 as blank
             if target_row < 0: 
-                target_row = 3
+                target_row = 5
 
             t += item_total_calc(row, target_row, col, target_col)
 
@@ -274,7 +275,7 @@ def main():
     
     # Embaralha as peças e imprime tabuleiro
     p.shuffle(22)
-    print p
+    print(p)
 
     # Invoca o solver usando a distância Manhattan como heurística
     path, count = p.solve(h_manhattan)
@@ -284,19 +285,19 @@ def main():
     
     # Imprime a lista de ações
     for i in path: 
-        print i
+        print(i)
         print("")
         print("  | ")
         print("  | ")
         print(" \\\'/ \n")
 
-    print "Resolvido com a Exploração por Distância de Manhattan", count, "estados"
+    print("Resolvido com a Exploração por Distância de Manhattan: ", count, " estados")
     path, count = p.solve(h_manhattan_lsq)
-    print "Resolvido com a Exploração por Mínimos Quadrados de Manhattan", count, "estados"
+    print ("Resolvido com a Exploração por Mínimos Quadrados de Manhattan: ", count, " estados")
     path, count = p.solve(h_linear)
-    print "Resolvido com a Exploração com Distância Linear", count, "estados"
+    print ("Resolvido com a Exploração com Distância Linear: ", count, "estados")
     path, count = p.solve(h_linear_lsq)
-    print "Resolvido com a Exploração por Mínimos Quadrados Linear", count, "estados"
+    print ("Resolvido com a Exploração por Mínimos Quadrados Linear: ", count, "estados")
 
 if __name__ == "__main__":
     main()
