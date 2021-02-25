@@ -22,13 +22,14 @@
 
 import random
 import math
+import time
 
 _goal_state = [[1,2,3,4,5,6],
                [7,8,9,10,11,12],
                [13,14,15,16,17,18],
                [19,20,21,22,23,24],
                [25,26,27,28,29,30],
-               [31,32,33,34,35,00]]
+               [31,32,33,34,35,0]]
                
 
 # -------------------------------------------------
@@ -47,7 +48,7 @@ class NPuzzle:
     def __init__(self):
         # valor heurístico
         self._hval = 0
-        # profundidade da busca no estato atual
+        # profundidade da busca no estado atual
         self._depth = 0
         # nó pai no caminho da pesquisa
         self._parent = None
@@ -121,7 +122,7 @@ class NPuzzle:
     # -------------------------------------------------
     def solve(self, h):
         """Realiza a busca A* para o estado objetivo.
-        h(puzzle) - função heuristica, returna um inteiro
+        h(puzzle) - função heuristica, retorna um inteiro
         """
         def is_solved(puzzle):
             return puzzle.adj_matrix == _goal_state
@@ -156,7 +157,7 @@ class NPuzzle:
                 elif idx_open > -1:
                     copy = openl[idx_open]
                     if fval < copy._hval + copy._depth:
-                        # copiar os valoes do movimento sobre os existentes
+                        # copiar os valores do movimento sobre os existentes
                         copy._hval = hval
                         copy._parent = move._parent
                         copy._depth = move._depth
@@ -220,7 +221,7 @@ def heur(puzzle, item_total_calc, total_calc):
 # item_total_calc - pega 6 parâmetros: linha e coluna atual, e linha e coluna alvo.
 #
 # Retorna: inteiro. A soma de item_total_calc sobre todas entradas e retorna um inteiro.
-# Este ;e o valor de função heurística.
+# Este é o valor da função heurística.
     t = 0
     for row in range(6):
         for col in range(6):
@@ -236,7 +237,7 @@ def heur(puzzle, item_total_calc, total_calc):
 
     return total_calc(t)
 
-# Algumas funções heurísticas: Manhattan, Mínimo Quadrados Manhattan, Liner, 
+# Algumas funções heurísticas: Manhattan, Mínimo Quadrados Manhattan, Linear, 
 
 # -------------------------------------------------
 def h_manhattan(puzzle):
@@ -270,6 +271,8 @@ def h_default(puzzle):
 ## Programa Principal N-Puzzle
 ## ---------------------------
 def main():
+    inicio = time.time()
+
     # Cria o tabuleiro a partir de sua classe
     p = NPuzzle()
     
@@ -291,13 +294,20 @@ def main():
         print("  | ")
         print(" \\\'/ \n")
 
-    print("Resolvido com a Exploração por Distância de Manhattan: ", count, " estados")
-    path, count = p.solve(h_manhattan_lsq)
-    print ("Resolvido com a Exploração por Mínimos Quadrados de Manhattan: ", count, " estados")
-    path, count = p.solve(h_linear)
-    print ("Resolvido com a Exploração com Distância Linear: ", count, "estados")
-    path, count = p.solve(h_linear_lsq)
-    print ("Resolvido com a Exploração por Mínimos Quadrados Linear: ", count, "estados")
+    print("Resolvido com a Exploração por Distância de Manhattan:", count, "estados")
+    # path, count = p.solve(h_manhattan_lsq)
+    # print ("Resolvido com a Exploração por Mínimos Quadrados de Manhattan:", count, "estados")
+    # path, count = p.solve(h_linear)
+    # print ("Resolvido com a Exploração por Distância Linear:", count, "estados")
+    # path, count = p.solve(h_linear_lsq)
+    # print ("Resolvido com a Exploração por Mínimos Quadrados Linear:", count, "estados")
+
+    # Invoca o solver sem uso da função de avaliação.
+    path, count = p.solve(h_default)
+    print("Resolvido sem uso da função de avaliação:", count, "estados.")
+
+    fim = time.time()
+    print('\nTempo de execução: %.2fs\n' % (fim-inicio))
 
 if __name__ == "__main__":
     main()
