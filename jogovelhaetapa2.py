@@ -28,6 +28,7 @@ HUMANO = -1
 COMP = +1
 tabuleiro = []
 tam_tabuleiro = 0
+dificuldade = 0
 
 """
 Funcao para avaliacao heuristica do estado.
@@ -38,29 +39,37 @@ Funcao para avaliacao heuristica do estado.
 
 def avaliacao(estado):
 
-    if vitoria(estado, COMP):
-        placar = +1
-    elif vitoria(estado, HUMANO):
-        placar = -1
-    else:
-        placar = 0
+    global tam_tabuleiro
+    win_estado = possiveis_estados_vitoria(estado)
 
-    return placar
+    evalVariablesHuman = [0 for z in range(tam_tabuleiro)]
+    evalVariablesComputer = [0 for z in range(tam_tabuleiro)]
+
+    for z in range(tam_tabuleiro):
+        for w in win_estado:
+            if(w.count(1) == z+1 and w.count(0) == (tam_tabuleiro - (z+1))):
+                evalVariablesComputer[z] = evalVariablesComputer[z] + 1
+            if(w.count(-1) == z+1 and w.count(0) == (tam_tabuleiro - (z+1))):
+                evalVariablesHuman[z] = evalVariablesHuman[z] + 1
+    resulthuman = 0
+    resultcomputer = 0
+    for z in range(tam_tabuleiro):
+        resultcomputer = resultcomputer + (z+1)*(evalVariablesComputer[z])
+        resulthuman = resulthuman + (z+1)*(evalVariablesHuman[z])
+
+    return resultcomputer - resulthuman
 
 
 """ fim avaliacao (estado)------------------------------------- """
 
+"""
+Funcao para gerar os possíveis estados de vitória no tabuleiro.
+:parametro (estado): o estado atual do tabuleiro
+:returna: lista de listas com as possiveis vitorias no estado atual
+ """
 
-def vitoria(estado, jogador):
-    """
-    Esta funcao testa se um jogador especifico vence. Possibilidades:
-    * Tres linhas     [X X X] or [O O O]
-    * Tres colunas    [X X X] or [O O O]
-    * Duas diagonais  [X X X] or [O O O]
-    :param. (estado): o estado atual do tabuleiro
-    :param. (jogador): um HUMANO ou um Computador
-    :return: True se jogador vence
-    """
+
+def possiveis_estados_vitoria(estado):
 
     global tam_tabuleiro
     win_estado = []
@@ -78,6 +87,26 @@ def vitoria(estado, jogador):
         win_estado.append(winColumn)
     win_estado.append(diagonal_principal)
     win_estado.append(diagonal_secundaria)
+
+    return win_estado
+
+
+""" fim possiveis_estados_vitoria (estado)------------------------------------- """
+
+
+def vitoria(estado, jogador):
+    """
+    Esta funcao testa se um jogador especifico vence. Possibilidades:
+    * Tres linhas     [X X X] or [O O O]
+    * Tres colunas    [X X X] or [O O O]
+    * Duas diagonais  [X X X] or [O O O]
+    :param. (estado): o estado atual do tabuleiro
+    :param. (jogador): um HUMANO ou um Computador
+    :return: True se jogador vence
+    """
+
+    global tam_tabuleiro
+    win_estado = possiveis_estados_vitoria(estado)
 
     # Se um, dentre todos os alinhamentos pertence um mesmo jogador,
     # então o jogador vence!
@@ -245,6 +274,7 @@ ou escolhe uma coordenada aleatória.
 def IA_vez(comp_escolha, humano_escolha):
     global tabuleiro
     global tam_tabuleiro
+    global dificuldade
 
     profundidade = len(celulas_vazias(tabuleiro))
     if profundidade == 0 or fim_jogo(tabuleiro):
@@ -258,7 +288,7 @@ def IA_vez(comp_escolha, humano_escolha):
         x = choice([z for z in range(tam_tabuleiro)])
         y = choice([z for z in range(tam_tabuleiro)])
     else:
-        move = minimax(tabuleiro, profundidade, COMP)
+        move = minimax(tabuleiro, dificuldade, COMP)
         print(move[0], move[1])
         x, y = move[0], move[1]
 
@@ -342,6 +372,7 @@ def main():
     primeiro = ''  # se HUMANO e o primeiro
     global tabuleiro
     global tam_tabuleiro
+    global dificuldade
 
     # HUMANO escolhe X ou O para jogar
     while humano_escolha != 'O' and humano_escolha != 'X':
@@ -378,7 +409,15 @@ def main():
     except:
         print('Valor inválido')
         exit()
-
+    limpa_console()
+    # Seleciona a dificuldade do jogo
+    try:
+        dificuldade = int(input(
+            "Selecione a dificuldade:\n1 - Muito Fácil\n2 - Fácil\n3 - Normal\n4 - Difícil\n"))
+    except:
+        print('bye')
+        exit()
+    limpa_console()
     # Seta o tamanho do tabuleiro
     criar_tabuleiro(tam_tabuleiro)
 
