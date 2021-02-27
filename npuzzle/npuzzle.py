@@ -176,6 +176,7 @@ class NPuzzle:
 
     # -------------------------------------------------
     def shuffle(self, step_count):
+        # Embaralha as peças
         for i in range(step_count):
             row, col = self.find(0)
             free = self._get_legal_moves()
@@ -185,7 +186,7 @@ class NPuzzle:
 
     # -------------------------------------------------
     def find(self, value):
-        #retorna a linha, coluna do valor especificado no gráfico
+        # retorna a linha, coluna do valor especificado no gráfico
         if value < 0 or value > 36:
             raise Exception("valor fora da faixa")
 
@@ -237,33 +238,13 @@ def heur(puzzle, item_total_calc, total_calc):
 
     return total_calc(t)
 
-# Algumas funções heurísticas: Manhattan, Mínimo Quadrados Manhattan, Linear, 
-
-# -------------------------------------------------
+# Heurística distância de Manhattan que calcula o desempenho do algoritmo
 def h_manhattan(puzzle):
     return heur(puzzle,
                 lambda r, tr, c, tc: abs(tr - r) + abs(tc - c),
                 lambda t : t)
 
-# -------------------------------------------------
-def h_manhattan_lsq(puzzle):
-    return heur(puzzle,
-                lambda r, tr, c, tc: (abs(tr - r) + abs(tc - c))**2,
-                lambda t: math.sqrt(t))
-
-# -------------------------------------------------
-def h_linear(puzzle):
-    return heur(puzzle,
-                lambda r, tr, c, tc: math.sqrt(math.sqrt((tr - r)**2 + (tc - c)**2)),
-                lambda t: t)
-
-# -------------------------------------------------
-def h_linear_lsq(puzzle):
-    return heur(puzzle,
-                lambda r, tr, c, tc: (tr - r)**2 + (tc - c)**2,
-                lambda t: math.sqrt(t))
-
-# -------------------------------------------------
+# Função sem uso de nenhuma heurística de avaliação do algoritmo
 def h_default(puzzle):
     return 0
 
@@ -271,6 +252,7 @@ def h_default(puzzle):
 ## Programa Principal N-Puzzle
 ## ---------------------------
 def main():
+    # Chama a função time para calcular o tempo de execução do algoritmo
     inicio = time.time()
 
     # Cria o tabuleiro a partir de sua classe
@@ -295,17 +277,12 @@ def main():
         print(" \\\'/ \n")
 
     print("Resolvido com a Exploração por Distância de Manhattan:", count, "estados")
-    # path, count = p.solve(h_manhattan_lsq)
-    # print ("Resolvido com a Exploração por Mínimos Quadrados de Manhattan:", count, "estados")
-    # path, count = p.solve(h_linear)
-    # print ("Resolvido com a Exploração por Distância Linear:", count, "estados")
-    # path, count = p.solve(h_linear_lsq)
-    # print ("Resolvido com a Exploração por Mínimos Quadrados Linear:", count, "estados")
 
     # Invoca o solver sem uso da função de avaliação.
     path, count = p.solve(h_default)
     print("Resolvido sem uso da função de avaliação:", count, "estados.")
 
+    # Calcula o tempo de execução do algoritmo
     fim = time.time()
     print('\nTempo de execução: %.2fs\n' % (fim-inicio))
 
