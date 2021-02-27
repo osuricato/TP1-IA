@@ -189,11 +189,15 @@ Função da IA que escolhe o melhor movimento
 :param (profundidade): índice do nó na árvore (0 <= profundidade <= 9),
 mas nunca será nove neste caso (veja a função iavez())
 :param (jogador): um HUMANO ou um Computador
+:param time_init: tempo de quando começou a o algoritmo minimax
 :return: uma lista com [melhor linha, melhor coluna, melhor placar]
 """
 
 
-def minimax(estado, profundidade, jogador):
+def minimax(estado, profundidade, jogador, time_init):
+    if(time.time() - time_init > 300):
+        print("time-out")
+        exit()
     # valor-minmax(estado)
     if jogador == COMP:
         melhor = [-1, -1, -infinity]
@@ -208,7 +212,7 @@ def minimax(estado, profundidade, jogador):
     for cell in celulas_vazias(estado):
         x, y = cell[0], cell[1]
         estado[x][y] = jogador
-        placar = minimax(estado, profundidade - 1, -jogador)
+        placar = minimax(estado, profundidade - 1, -jogador, time_init)
         placar[3] = placar[3] + 1
         melhor.append(placar[3])
         estado[x][y] = 0
@@ -294,9 +298,9 @@ def IA_vez(comp_escolha, humano_escolha):
         y = choice([z for z in range(tam_tabuleiro)])
     else:
         if(profundidade < dificuldade):
-            move = minimax(tabuleiro, profundidade, COMP)
+            move = minimax(tabuleiro, profundidade, COMP, time.time())
         else:
-            move = minimax(tabuleiro, dificuldade, COMP)
+            move = minimax(tabuleiro, dificuldade, COMP, time.time())
         print(
             f'Foram gerados {move[3]} estados durante a busca para esse movimento')
         global estados_gerados_total
@@ -376,7 +380,7 @@ Funcao Principal que chama todas funcoes
 
 
 def main():
-
+    start_time = time.time()
     limpa_console()
     humano_escolha = ''  # Pode ser X ou O
     comp_escolha = ''  # Pode ser X ou O
@@ -426,7 +430,9 @@ def main():
     # Seleciona a dificuldade do jogo
     try:
         dificuldade = int(input(
-            "Selecione a dificuldade:\n1 - Muito Fácil\n2 - Fácil\n3 - Normal\n4 - Difícil\n"))
+            "Selecione a dificuldade:\n1 - Fácil\n2 - Normal\n"))
+        if(dificuldade > 2 or dificuldade <= 0):
+            exit()
     except:
         print('bye')
         exit()
@@ -462,7 +468,7 @@ def main():
 
     # Infomra a quantidade total de estados visitados
     print(
-        f'Foram gerados {estados_gerados_total} durante as buscas da IA desse jogo')
+        f'Foram gerados {estados_gerados_total} estados durante as buscas da IA \ndesse jogo com duração de {(time.time() -start_time):.2f}s')
 
     exit()
 
