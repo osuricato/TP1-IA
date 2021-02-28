@@ -1,20 +1,7 @@
-# -*- coding: utf-8 -*-
-
 # Código exemplo do problema do quebra cabeça de N peças usando o algoritmo A*
 # A Função heurística é a conhecida distância Manhattan entre a posição 
 #  atual e a posição desejada para cada peça.
 # Distância de Manhattan também conhecida como distância de quarteirão.
-
-# Realizando uma analogia entre a diferença entre essas duas distâncias, 
-# vamos imaginar uma a rota de GPS para dois veículos, uma para um carro 
-# e outra para um helicóptero. A Distância Euclidiana seria o segmento de 
-# uma reta na qual indicaria uma possível rota de helicóptero (na qual não 
-# haveria preocupação com as ruas já que é um veículo aéreo, e geometricamente 
-# seria a hipotenusa de um triângulo) e a Distância Manhattan seria um segmento 
-# de retas na vertical quanto na horizontal semelhante a uma rota de carro 
-# (já que esse obedece o sentido das ruas, e devido à esse comportamento essa 
-# medida de distância é também conhecida como City Block, e  geometricamente 
-# seriam a soma dos catetos).
 
 # D = |x1 – x2| + |y1 – y2|.
 

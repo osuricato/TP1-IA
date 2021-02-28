@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-# -*- codificacao: utf-8 -*-
-
-"""
-Este código servirá de exemplo para o aprendizado do algoritmo MINIMAX 
-na disciplina de Inteligência Artificial - CSI457
-Semestre: 2018/2
-"""
-
-#!/usr/bin/env python3
 from math import inf as infinity
 from random import choice
 import platform
@@ -36,8 +26,7 @@ estados_gerados_total = 0
 """
 Funcao para avaliacao heuristica do estado.
 :parametro (estado): o estado atual do tabuleiro
-:returna: Retorna um valor baseado na quantidade de peças do computador em cada linha coluna, diagonal principal e secundária
-            usando função eval
+:returna: Retorna um valor baseado na quantidade de peças do computador em cada linha coluna, diagonal principal e secundária usando função eval
  """
 
 
